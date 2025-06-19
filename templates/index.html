@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JD ChatBot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 15px;
+      background: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 20px;
+      margin: 10px 0;
+      display: inline-block;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .bubble.user {
+      background-color: #d1e7dd;
+      align-self: flex-end;
+      text-align: right;
+      float: right;
+      clear: both;
+    }
+
+    .bubble.bot {
+      background-color: #e2e3e5;
+      align-self: flex-start;
+      text-align: left;
+      float: left;
+      clear: both;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0b5ed7;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>KADA ChatBot</h2>
+    <div id="chat-box" class="chat-box"></div>
+    <div class="input-area">
+      <input type="text" id="message" placeholder="Enter your message..." />
+      <button onclick="sendMessage()">sending</button>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const msg = document.getElementById("message").value;
+      if (!msg) return;
+
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="bubble user">👤 ${msg}</div>`;
+      document.getElementById("message").value = "";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      chatBox.innerHTML += `<div class="bubble bot">🤖 ${data.response}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
